@@ -13,7 +13,7 @@ def main():
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         faces = face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5)
 
-        if faces is not ():
+        if len(faces) > 0:
             print('Faces detected!')
             for (x, y, w, h) in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
