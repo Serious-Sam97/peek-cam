@@ -1,6 +1,21 @@
 import cv2
 
-def main():
+def frameWithFacesDetected(frame):
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    faces = face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5)
+
+    if len(faces) > 0:
+        print('Faces detected!')
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.putText(frame, "Face", (x,y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0, 2), 2)
+    else:
+        print('No Faces detected!')
+
+    return frame
+
+def openCamera():
     cap = cv2.VideoCapture(0)
 
     while True:
@@ -9,26 +24,18 @@ def main():
         if not ret:
             break
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5)
-
-        if len(faces) > 0:
-            print('Faces detected!')
-            for (x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                cv2.putText(frame, "Face", (x,y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0, 2), 2)
-        else:
-            print('No Faces detected!')
+        frame = frameWithFacesDetected(frame)
 
         cv2.imshow("Frame", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-
     cap.release()
     cv2.destroyAllWindows()
+
+def main():
+    openCamera()    
 
 if __name__ == "__main__":
     main()
